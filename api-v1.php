@@ -24,7 +24,7 @@ require_once('functions.php');
 require_once('M29.php');
 
 if(!function_exists('json_encode')) {
-  http_400(array('json_include is not found, please contact your server administrator'));
+  http_400(array('json_encode is not found, please contact your server administrator'));
 }
 
 if(isset($config['disable_api']) && $config['disable_api']) {
