@@ -27,7 +27,7 @@ $config = array();
 # Maximum input URL length.  If you try to raise from the default 
 # 2048, you may need to alter the database schema, depending on the DB 
 # driver. Lowering from the default is safe.
-#$config['max_url_length] = 2048;
+#$config['max_url_length'] = 2048;
 
 # Allowed protocols.  These are currently the default.  Note that due
 # to the way M29 is architected, it's still possible for users to
