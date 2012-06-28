@@ -1,0 +1,44 @@
+You must set up a database and schema for M29 to use.  For information 
+about how to connect M29 to the database, see config.sample.php.
+
+All package suggestions here assume a Debian-based OS; please consult 
+your OS's documentation if you are not using a Debian-based OS.
+
+== SQLite 3 ==
+The simplest to set up.  This require the "pdo_sqlite" PHP module 
+(php5-sqlite package), and the command line tools sqlite3 (sqlite3 
+package) to apply the schema:
+
+CREATE TABLE urls (
+  id INTEGER PRIMARY KEY,
+  created_at BIGINT NOT NULL,
+  accessed_at BIGINT,
+  hits BIGINT NOT NULL DEFAULT 0,
+  encrypted_url BLOB NOT NULL,
+  first_key BLOB NOT NULL
+);
+
+Note that apparently PRIMARY KEY will not autoincrement when set to 
+BIGINT, so INTEGER is set above.  This limits you to 2,147,483,647 
+entries.  (If you're hitting that limit, SQLite is probably not the 
+best solution anyway.)
+
+== MySQL ==
+Requires the "pdo_mysql" and a (php5-mysql package) and a functional 
+MySQL server/client.
+
+CREATE TABLE urls (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  created_at bigint(20) NOT NULL,
+  accessed_at bigint(20) DEFAULT NULL,
+  hits bigint(20) NOT NULL,
+  encrypted_url varbinary(2048) NOT NULL,
+  first_key binary(8) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+== PostgreSQL ==
+Requires the "pdo_pgsql" and a (php5-pgsql package) and a functional 
+PostgreSQL server/client.
+
+TODO

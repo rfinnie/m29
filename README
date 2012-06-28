@@ -1,0 +1,30 @@
+M29, a secure URL shortener
+By Ryan Finnie <ryan@finnie.org>
+http://m29.us/
+
+REQUIREMENTS
+
+M29 requires PHP 5 (posibly 5.2.0) or later, a functional database 
+(SQLite 3, MySQL or PostgreSQL) with the appropriate PHP PDO driver, 
+and an Apache server with mod_rewrite enabled (there is a way to make 
+ugly URLs without mod_rewrite enabled, but it is unsupported).  The 
+API server interface requires PHP 5.2.0 with the json libraries 
+(json_encode) enabled.
+
+INSTALLATION
+
+1. Extract the files to the appropriate directory (ideally the root of 
+the vhost, since you want the generated URLs as short as possible).
+
+2. Copy htaccess.sample to .htaccess, and modify if needed.  (The 
+defaults should be fine.)
+
+3. Copy config.sample.php to config.php and edit.  At the very least, 
+you will need to set up a database and populate the schema.  See the 
+comments in config.php and README-databases for more information.
+
+4. Go to the vhost and test.  You should now be able to submit and 
+retrieve URLs.
+
+5. If you would like to customize index.php, view the file for 
+information on how to do this safely.

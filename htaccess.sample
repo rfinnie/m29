@@ -1,0 +1,15 @@
+# BEGIN M29
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+# Redirect support (example format: XQ/eGiiTURg0ZM)
+RewriteRule ^([A-Za-z0-9\_\-]+)/([A-Za-z0-9\_\-]+)$ /redirect.php/$1/$2 [L]
+# goo.gl-compatible API
+RewriteRule ^urlshortener/v1/(.*?)$ /api-v1.php/$1 [L]
+</IfModule>
+
+<IfModule mod_deflate.c>
+# Allow API output to be compressed (if the client supports it)
+AddOutputFilterByType DEFLATE application/json
+</IfModule>
+# END M29

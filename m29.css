@@ -1,0 +1,56 @@
+body {
+  background-color: #fcfcfc;
+  font-family: 'Ubuntu Mono', monospace;
+  color: #222222;
+  font-size: 16pt;
+  margin: 0;
+}
+#container {
+  margin-top: 1em;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 3em;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  max-width: 35em;
+}
+
+input[type=text] {
+  color: #222222;
+  font-size: 12pt;
+  background-color: #fcfcfc;
+  border: 1px solid #222222;
+  font-family: 'Ubuntu Mono', monospace;
+}
+
+input[type=submit] {
+  color: #222222;
+  font-size: 12pt;
+  background-color: #fcfcfc;
+  border: 1px solid #222222;
+  font-family: 'Ubuntu Mono', monospace;
+  font-weight: bold;
+}
+
+a {
+  color: #708090;
+}
+a.visited {
+  color: #778899;
+}
+h1, h2, h3 {
+  text-align: center;
+}
+h1 {
+  font-size: 24pt;
+}
+h2 {
+  font-size: 20pt;
+}
+.center {
+  text-align: center;
+}
+
+p {
+  text-align: justify;
+}
