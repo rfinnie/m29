@@ -300,13 +300,17 @@ class M29 {
       }
     }
 
-    $this->db_connect();
     $now = time();
-    $sth = $this->dbh->prepare("insert into urls (created_at, hits, encrypted_url, first_key) values (?, 0, ?, ?)");
-    $sth->bindValue(1, $now, PDO::PARAM_INT);
-    $sth->bindValue(2, $longUrlEncrypted_bin, PDO::PARAM_STR);
-    $sth->bindValue(3, $firstKey_bin, PDO::PARAM_STR);
-    $sth->execute();
+    try {
+      $this->db_connect();
+      $sth = $this->dbh->prepare("insert into urls (created_at, hits, encrypted_url, first_key) values (?, 0, ?, ?)");
+      $sth->bindValue(1, $now, PDO::PARAM_INT);
+      $sth->bindValue(2, $longUrlEncrypted_bin, PDO::PARAM_STR);
+      $sth->bindValue(3, $firstKey_bin, PDO::PARAM_STR);
+      $sth->execute();
+    } catch (PDOException $e) {
+      return(array('errors' => array("Database error: " . $e->getMessage())));
+    }
 
     $id = $this->dbh->lastInsertId();
     $idb64 = $this->base64_encode_url($this->int2chars($id));
@@ -353,10 +357,14 @@ class M29 {
       return(array('errors' => array("secondKey must be 64 bits (8 bytes)")));
     }
 
-    $this->db_connect();
-    $sth = $this->dbh->prepare("select * from urls where id = ?");
-    $sth->bindValue(1, $this->chars2int($id_bin), PDO::PARAM_INT);
-    $sth->execute();
+    try {
+      $this->db_connect();
+      $sth = $this->dbh->prepare("select * from urls where id = ?");
+      $sth->bindValue(1, $this->chars2int($id_bin), PDO::PARAM_INT);
+      $sth->execute();
+    } catch (PDOException $e) {
+      return(array('errors' => array("Database error: " . $e->getMessage())));
+    }
 
     $row = array();
     while($rowi = $sth->fetch()) { $row = $rowi; }
@@ -387,10 +395,14 @@ class M29 {
 
     if($increment_hits) {
       $now = time();
-      $sth = $this->dbh->prepare("update urls set accessed_at = ?, hits = hits + 1 where id = ?");
-      $sth->bindValue(1, $now, PDO::PARAM_INT);
-      $sth->bindValue(2, $this->chars2int($id_bin), PDO::PARAM_INT);
-      $sth->execute();
+      try {
+        $sth = $this->dbh->prepare("update urls set accessed_at = ?, hits = hits + 1 where id = ?");
+        $sth->bindValue(1, $now, PDO::PARAM_INT);
+        $sth->bindValue(2, $this->chars2int($id_bin), PDO::PARAM_INT);
+        $sth->execute();
+      } catch (PDOException $e) {
+        return(array('errors' => array("Database error: " . $e->getMessage())));
+      }
     }
 
     return($out);
