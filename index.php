@@ -25,7 +25,11 @@ require_once('M29.php');
 
 if(isset($_POST['url'])) {
   $m29 = new M29($config);
-  $ret = $m29->insert_long_url($_POST['url']);
+  try {
+    $ret = $m29->insert_long_url($_POST['url']);
+  } catch(M29Exception $e) {
+    $error = $e->getMessage();
+  }
 }
 
 ?>
@@ -52,11 +56,8 @@ if(isset($_POST['url'])) {
 <?php if(isset($ret) && isset($ret['short_url'])) { ?>
 <p class="center">The following short URL has been created:</p>
 <p class="center"><a href="<?php echo $ret['short_url'] ?>" rel="nofollow"><?php echo $ret['short_url'] ?></a></p>
-<?php } elseif(isset($ret) && count($ret['errors']) > 0) { ?>
-<p class="center"><strong>Error!</strong></p>
-<?php foreach($ret['errors'] as $error) { ?>
-<p class="center"><strong>&raquo; <?php echo $error ?></strong></p>
-<?php } ?>
+<?php } elseif(isset($error) && $error) { ?>
+<p class="center"><strong>Error:</strong> <?php echo $error ?></p>
 <?php } ?>
 
 <h2>About</h2>

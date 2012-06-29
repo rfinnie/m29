@@ -36,9 +36,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
   if(isset($json['longUrl'])) {
     $longUrl = $json['longUrl'];
 
-    $ret = $m29->insert_long_url($longUrl);
-    if(count($ret['errors']) > 0) {
-      http_400($ret['errors'], true);
+    try {
+      $ret = $m29->insert_long_url($longUrl);
+    } catch(M29Exception $e) {
+      http_400(array($e->getMessage()), true);
     }
 
     $out = array(
@@ -57,9 +58,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       $secondKey_bin = '';
     }
 
-    $ret = $m29->insert_encrypted_url($longUrlEncrypted_bin, $firstKey_bin, $secondKey_bin);
-    if(count($ret['errors']) > 0) {
-      http_400($ret['errors'], true);
+    try {
+      $ret = $m29->insert_encrypted_url($longUrlEncrypted_bin, $firstKey_bin, $secondKey_bin);
+    } catch(M29Exception $e) {
+      http_400(array($e->getMessage()), true);
     }
 
     if($secondKey_bin) {
@@ -84,10 +86,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
   }
 } else {
   if(isset($_GET['shortUrl'])) {
-    $ret = $m29->process_short_url($_GET['shortUrl'], false);
-
-    if(count($ret['errors']) > 0) {
-      http_400($ret['errors'], true);
+    try {
+      $ret = $m29->process_short_url($_GET['shortUrl'], false);
+    } catch(M29Exception $e) {
+      http_400(array($e->getMessage()), true);
     }
 
     $out = array(

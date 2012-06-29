@@ -21,9 +21,10 @@ if(isset($_SERVER['PATH_INFO'])) {
   http_400(array('Cannot determine the short URL'));
 }
 
-$ret = $m29->process_short_url($url, true);
-if(count($ret['errors']) > 0) {
-  http_400($ret['errors']);
+try {
+  $ret = $m29->process_short_url($url, true);
+} catch(M29Exception $e) {
+  http_400(array($e->getMessage()));
 }
 
 header($_SERVER['SERVER_PROTOCOL'] . ' 301 Moved Permanently');
