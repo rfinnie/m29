@@ -21,16 +21,6 @@ if(file_exists('index.local.php')) {
 
 require_once('config.php');
 require_once('functions.php');
-require_once('M29.php');
-
-if(isset($_POST['url'])) {
-  $m29 = new M29($config);
-  try {
-    $ret = $m29->insert_long_url($_POST['url']);
-  } catch(M29Exception $e) {
-    $error = $e->getMessage();
-  }
-}
 
 ?>
 <!DOCTYPE HTML>
@@ -53,12 +43,21 @@ if(isset($_POST['url'])) {
 </form>
 </div>
 
-<?php if(isset($ret) && isset($ret['short_url'])) { ?>
-<p class="center">The following short URL has been created:</p>
-<p class="center"><a href="<?php echo $ret['short_url'] ?>" rel="nofollow"><?php echo $ret['short_url'] ?></a></p>
-<?php } elseif(isset($error) && $error) { ?>
-<p class="center"><strong>Error:</strong> <?php echo $error ?></p>
-<?php } ?>
+<?php
+if(isset($_POST['url'])) {
+  list($short_url, $error) = url_submit($_POST['url'], $config);
+  if($short_url) {
+    ?>
+    <p class="center">The following short URL has been created:</p>
+    <p class="center"><a href="<?php echo $short_url ?>" rel="nofollow"><?php echo $short_url ?></a></p>
+    <?php
+  } elseif(isset($error) && $error) {
+    ?>
+    <p class="center"><strong>Error:</strong> <?php echo $error ?></p>
+    <?php
+  }
+}
+?>
 
 <h2>About</h2>
 

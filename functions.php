@@ -13,6 +13,28 @@
  * @license http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL version 2
  */
 
+require_once('M29.php');
+
+/**
+ * Handle URL submissions
+ *
+ * This function is used by index.php to make the file as simple and
+ * standardized as possible.
+ *
+ * @param string $long_url Long URL specified by the user
+ * @param array $config Optional configuration array
+ * @return array Tuple of short URL and error
+ */
+function url_submit($long_url, $config = array()) {
+  $m29 = new M29($config);
+  try {
+    $ret = $m29->insert_long_url($long_url);
+  } catch(M29Exception $e) {
+    return(array('', $e->getMessage()));
+  }
+  return(array($ret['short_url'], ''));
+}
+
 /**
  * Outputs an HTTP 400 (Bad Request) error
  *
