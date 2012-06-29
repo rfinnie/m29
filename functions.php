@@ -1,30 +1,26 @@
 <?php
-########################################################################
-# M29, a secure URL shortener
-# Copyright (C) 2012 Ryan Finnie <ryan@finnie.org>
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-# 02110-1301, USA.
-########################################################################
 
-# This file contains functions used by multiple scripts in the
-# front-end code only.  The M29 class MUST NOT rely on any functions
-# defined here.
+/**
+ * M29 front-end shared functions
+ *
+ * This file contains functions used by multiple scripts in the
+ * front-end code only.  The M29 class MUST NOT rely on any functions
+ * defined here.
+ *
+ * @package M29
+ * @author Ryan Finnie <ryan@finnie.org>
+ * @copyright 2012 Ryan Finnie
+ * @license http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL version 2
+ */
 
-# Return a HTTP 400 (Bad Request) error, given an array of error
-# messages.
+/**
+ * Outputs an HTTP 400 (Bad Request) error
+ *
+ * @param array $errors Error strings to output
+ * @param bool $json Whether to output the error as a goo.gl-compatible
+ *                   JSON object
+ * @return void
+ */
 function http_400($errors, $json = false) {
   $outerrors = array();
   $lasterror = '';

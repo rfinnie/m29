@@ -1,40 +1,88 @@
 <?php
-########################################################################
-# M29, a secure URL shortener
-# Copyright (C) 2012 Ryan Finnie <ryan@finnie.org>
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-# 02110-1301, USA.
-########################################################################
 
+/**
+ * M29 back-end class
+ *
+ * This class is a self-contained class used for serving data to M29
+ * front-ends.
+ *
+ * @package M29
+ * @author Ryan Finnie <ryan@finnie.org>
+ * @copyright 2012 Ryan Finnie
+ * @license http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL version 2
+ */
 class M29 {
-  # Options configurable via $config
+  /**
+   * The base URL (minus trailing slash) of the shortening service
+   *
+   * @var string
+   */
   public $base_url = '';
+
+  /**
+   * URL protocols allowed to be stored or served
+   *
+   * @var array
+   */
   public $allowed_protocols = array('http', 'https', 'ftp', 'gopher');
+
+  /**
+   * Maximum length of a submitted URL to store
+   *
+   * @var int
+   */
   public $max_url_length = 2048;
+
+  /**
+   * The DSN to be used by PDO when connecting
+   *
+   * @var string
+   */
   public $pdo_dsn = 'mysql:host=localhost;dbname=m29';
+
+  /**
+   * The username to be used by PDO when connecting
+   *
+   * @var string
+   */
   public $pdo_username = 'm29';
+
+  /**
+   * The password to be used by PDO when connecting
+   *
+   * @var string
+   */
   public $pdo_password = '';
+
+  /**
+   * Extra options to be used by PDO when connecting
+   *
+   * @var array
+   */
   public $pdo_driver_options = array();
 
-  # Internally used (but still public) options;
+  /**
+   * The PDO database object
+   *
+   * @var object
+   */
   public $dbh;
+
+  /**
+   * Whether the database connection is established
+   *
+   * @var bool
+   */
   public $dbh_connected = false;
 
-  # When constructing the class instance, use $config to populate
-  # config options.
+  /**
+   * Class constuctor
+   *
+   * @param array $config Optional array of configuration options.  If
+   *                      configuration options are not provided, best
+   *                      defaults will be used.
+   * @return void
+   */
   function __construct($config = array()) {
     if(!is_array($config)) {
       $config = array();
@@ -54,8 +102,8 @@ class M29 {
       }
     }
 
-    # A somewhat crude attempt at guessing the base URL.  Please, set it
-    # explicitly instead.
+    // A somewhat crude attempt at guessing the base URL.  Please, set it
+    // explicitly instead.
     if(!$this->base_url) {
       $proto = 'http';
       if(isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on')) {
@@ -75,7 +123,12 @@ class M29 {
 
   }
 
-  # Connect to the database
+  /**
+   * Connect to the database
+   *
+   * @param void
+   * @return void
+   */
   public function db_connect() {
     if(!$this->dbh_connected) {
       $this->dbh = new PDO(
@@ -88,7 +141,12 @@ class M29 {
     }
   }
 
-  # RFC4648-compatible Base64 encoder
+  /**
+   * RFC4648-compatible Base64 encoder
+   *
+   * @param string $in Binary input data
+   * @return string RFC4648-compatible Base64-encoded data
+   */
   public function base64_encode_url($in) {
     $out = base64_encode($in);
     $out = str_replace('+', '-', $out);
@@ -97,7 +155,12 @@ class M29 {
     return($out);
   }
 
-  # RFC4648-compatible Base64 decoder
+  /**
+   * RFC4648-compatible Base64 decoder
+   *
+   * @param string $in RFC4648-compatible Base64-encoded data
+   * @return string Binary data
+   */
   public function base64_decode_url($in) {
     $out = $in;
     $out = str_replace('-', '+', $out);
@@ -105,7 +168,12 @@ class M29 {
     return(base64_decode($out));
   }
 
-  # Convert an integer into multiple binary chars
+  /**
+   * Convert an integer into multiple binary chars
+   *
+   * @param int $int Integer
+   * @return string Binary characters
+   */
   public function int2chars($int) {
     $out = '';
     while($int > 255) {
@@ -116,7 +184,12 @@ class M29 {
     return($out);
   }
 
-  # Convert multiple binary chars into an integer
+  /**
+   * Convert multiple binary chars into an integer
+   *
+   * @param string $chars Binary characters
+   * @return int Integer
+   */
   public function chars2int($chars) {
     $o = 0;
     $s = 0;
@@ -129,7 +202,12 @@ class M29 {
     return($o);
   }
 
-  # Return a string of random bytes
+  /**
+   * Return a string of random bytes
+   *
+   * @param int $num_bytes Optional number of random bytes to generate
+   * @return string Generated random bytes
+   */
   public function randbytes($num_bytes = 8) {
     $out = '';
     for($i = 0; $i < $num_bytes; $i++) {
@@ -138,19 +216,35 @@ class M29 {
     return($out);
   }
 
-  # Encrypt data using AES-128, ECB mode (no IV), null terminated
-  # padding
+  /**
+   * Encrypt data using AES-128, ECB mode (no IV), null terminated padding
+   *
+   * @param string $data Unencrypted data
+   * @param string $key 128-bit key
+   * @return string Encrypted data
+   */
   public function encrypt($data, $key) {
     return(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $key, $data, MCRYPT_MODE_ECB));
   }
 
-  # Decrypt data encrypted using AES-128, ECB mode (no IV), null
-  # terminated padding
+  /**
+   * Decrypt data encrypted using AES-128, ECB mode (no IV), null
+   * terminated padding
+   *
+   * @param string $data Encrypted data
+   * @param string $key 128-bit key
+   * @return string Unencrypted data
+   */
   public function decrypt($data, $key) {
     return(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $data, MCRYPT_MODE_ECB));
   }
 
-  # Given a long URL, return a short URL using a randomly-generated key
+  /**
+   * Shorten a long URL using a randomly-generated key
+   *
+   * @param string $url Long URL
+   * @return array Errors + data array
+   */
   public function insert_long_url($url) {
     $firstKey_bin = $this->randbytes(8);
     $secondKey_bin = $this->randbytes(8);
@@ -171,9 +265,14 @@ class M29 {
     return($this->insert_encrypted_url($longUrlEncrypted_bin, $firstKey_bin, $secondKey_bin));
   }
 
-  # Given longUrlEncrypted, firstKey and optionally secondKey, return
-  # a short URL (possibly incomplete short URL if secondKey was not
-  # specified).
+  /**
+   * Shorten an encrypted long URL
+   *
+   * @param string $longUrlEncrypted_bin Encrypted URL (non-Base64)
+   * @param string $firstKey_bin First half of key (non-Base64)
+   * @param string $secondKey_bin Optional second half of key (non-Base64)
+   * @return array Errors + data array
+   */
   public function insert_encrypted_url($longUrlEncrypted_bin, $firstKey_bin, $secondKey_bin = '') {
     if(!(strlen($firstKey_bin) == 8)) {
       return(array('errors' => array("firstKey must be 64 bits (8 bytes)")));
@@ -232,7 +331,14 @@ class M29 {
     return($out);
   }
 
-  # Given a full shortUrl, retrieve information about the longUrl
+  /**
+   * Retrieve information about a short URL
+   *
+   * @param string $shortUrl Full short URL
+   * @param bool $increment_hits Whether to increment the hit count on
+   *                             the short URL statistics
+   * @return array Errors + data array
+   */
   public function process_short_url($shortUrl, $increment_hits = false) {
     if(!substr($shortUrl, 0, strlen($this->base_url)) == $this->base_url) {
       return(array('errors' => array("Cannot determine URL components")));

@@ -1,23 +1,13 @@
 <?php
-########################################################################
-# M29, a secure URL shortener
-# Copyright (C) 2012 Ryan Finnie <ryan@finnie.org>
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-# 02110-1301, USA.
-########################################################################
+
+/**
+ * M29 redirector
+ *
+ * @package M29
+ * @author Ryan Finnie <ryan@finnie.org>
+ * @copyright 2012 Ryan Finnie
+ * @license http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL version 2
+ */
 
 require_once('config.php');
 require_once('functions.php');
