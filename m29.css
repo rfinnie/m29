@@ -32,6 +32,10 @@ input[type=submit] {
   font-weight: bold;
 }
 
+input[disabled] {
+  color: #cccccc;
+}
+
 a {
   color: #708090;
 }
