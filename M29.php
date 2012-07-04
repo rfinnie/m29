@@ -278,10 +278,10 @@ class M29 {
     if(!(strlen($firstKey_bin) == 8)) {
       throw new M29Exception("firstKey must be 64 bits (8 bytes)");
     }
+    if(strlen($longUrlEncrypted_bin) > $this->max_url_length) {
+      throw new M29Exception("URLs must be " . $this->max_url_length . " characters or less");
+    }
     if($secondKey_bin) {
-      if(strlen($longUrlEncrypted_bin) > $this->max_url_length) {
-        throw new M29Exception("URLs must be " . $this->max_url_length . " characters or less");
-      }
       if(!(strlen($secondKey_bin) == 8)) {
         throw new M29Exception("secondKey must be 64 bits (8 bytes)");
       }
