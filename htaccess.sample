@@ -2,6 +2,10 @@
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteBase /
+# Do not rewrite real filenames or directories, even if they look like
+# they could be short URLs.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 # Redirect support (example format: XQ/eGiiTURg0ZM)
 RewriteRule ^([A-Za-z0-9\_\-]+)/([A-Za-z0-9\_\-]+)$ /redirect.php/$1/$2 [L]
 # goo.gl-compatible API
