@@ -22,6 +22,7 @@ if(file_exists('index.local.php')) {
 require_once('config.php');
 require_once('functions.php');
 
+$ret = index_handle_post($config);
 ?>
 <!DOCTYPE HTML>
 <html lang="en">
@@ -30,6 +31,10 @@ require_once('functions.php');
 <title>Secure URL Shortener</title>
 <link href='http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700' rel='stylesheet' type='text/css'>
 <link href="m29.css" rel="stylesheet" type="text/css"/>
+<script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/aes.js"></script>
+<script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/components/mode-ecb-min.js"></script>
+<script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/components/pad-zeropadding-min.js"></script>
+<script src="m29.js"></script>
 </head>
 <body>
 <div id="container">
@@ -38,26 +43,25 @@ require_once('functions.php');
 <div>
 <form method="post">
 <div>Enter a long URL to shorten:</div>
-<div><input type="text" name="url" value="<?php echo (isset($_POST['url']) ? $_POST['url'] : '') ?>" style="width: 100%;" /></div>
-<div style="text-align: right;"><input type="submit" value="Submit" /></div>
+<div><input type="text" name="longUrl" style="width: 100%;" /></div>
+<div style="text-align: right;"><input type="submit" name="submitButton" value="Submit" onclick="return submitEncryptedUrl(this.form, document.getElementById('responseResults'));" /></div>
 </form>
 </div>
 
+<div id="responseResults">
 <?php
-if(isset($_POST['url'])) {
-  list($short_url, $error) = url_submit($_POST['url'], $config);
-  if($short_url) {
-    ?>
-    <p class="center">The following short URL has been created:</p>
-    <p class="center"><a href="<?php echo $short_url ?>" rel="nofollow"><?php echo $short_url ?></a></p>
-    <?php
-  } elseif(isset($error) && $error) {
-    ?>
-    <p class="center"><strong>Error:</strong> <?php echo $error ?></p>
-    <?php
-  }
+if(isset($ret['short_url']) && $ret['short_url']) {
+  ?>
+  <p class="center">The following short URL has been created:</p>
+  <p class="center"><a href="<?php echo $ret['short_url'] ?>" rel="nofollow"><?php echo $ret['short_url'] ?></a></p>
+  <?php
+} elseif(isset($ret['error']) && $ret['error']) {
+  ?>
+  <p class="center"><strong>Error:</strong> <?php echo $ret['error'] ?></p>
+  <?php
 }
 ?>
+</div>
 
 <h2>About</h2>
 
