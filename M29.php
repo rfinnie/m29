@@ -253,7 +253,7 @@ class M29 {
 
     $valid_protocol = false;
     foreach($this->allowed_protocols as $proto) {
-      if(substr($url, 0, strlen($proto) + 1) == "$proto:") {
+      if(strtolower(substr($url, 0, strlen($proto) + 1)) == strtolower("$proto:")) {
         $valid_protocol = true;
         break;
       }
@@ -291,7 +291,7 @@ class M29 {
 
       $valid_protocol = false;
       foreach($this->allowed_protocols as $proto) {
-        if(substr($url, 0, strlen($proto) + 1) == "$proto:") {
+        if(strtolower(substr($url, 0, strlen($proto) + 1)) == strtolower("$proto:")) {
           $valid_protocol = true;
           break;
         }
@@ -376,7 +376,7 @@ class M29 {
 
     $valid_protocol = false;
     foreach($this->allowed_protocols as $proto) {
-      if(substr($longUrl, 0, strlen($proto) + 1) == "$proto:") {
+      if(strtolower(substr($longUrl, 0, strlen($proto) + 1)) == strtolower("$proto:")) {
         $valid_protocol = true;
         break;
       }
