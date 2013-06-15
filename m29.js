@@ -56,6 +56,8 @@ function submitEncryptedUrl(form, htmlresponse) {
   form.longUrl.value = '';
   // Disable the submit button during processing.
   form.submitButton.disabled = true;
+  var oldsubmitval = form.submitButton.value;
+  form.submitButton.value = 'Please wait';
 
   // Encrypt the URL.
   var key = CryptoJS.lib.WordArray.random(128/8);
@@ -92,6 +94,7 @@ function submitEncryptedUrl(form, htmlresponse) {
 
   // If all went well, re-enable the button.
   form.submitButton.disabled = false;
+  form.submitButton.value = oldsubmitval;
 
   return false;
 }
