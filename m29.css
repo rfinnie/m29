@@ -55,7 +55,7 @@ p {
   text-align: justify;
 }
 
-#responseResults p {
+#responseResults * {
   text-align: center;
 }
 
