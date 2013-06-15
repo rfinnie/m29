@@ -44,6 +44,12 @@ function submitEncryptedUrl(form, htmlresponse) {
   var longUrl = form.longUrl.value;
   if(longUrl == '') { return false; }
 
+  // Check for a URL-like structure
+  if(!longUrl.match(/^[a-zA-Z0-9\-\+\_]+:\/\//)) {
+    htmlresponse.innerHTML = '<p class="center"><strong>Error:</strong> Input must be a full URL.</p>';
+    return false;
+  }
+
   // Remove the original URL in case XHR fails, to avoid leaking the
   // unencrypted URL to M29.
   form.longUrl.value = '';
