@@ -21,6 +21,17 @@ if(isset($config['disable_api']) && $config['disable_api']) {
   http_400(array('The API is disabled'), true);
 }
 
+if($_SERVER['PATH_INFO'] == '/url/history') {
+  $out = array(
+    'totalItems' => 0,
+    'items' => array()
+  );
+
+  header("Content-Type: application/json; charset=UTF-8");
+  print json_encode($out) . "\n";
+  exit();
+}
+
 if(!($_SERVER['PATH_INFO'] == '/url')) {
   http_400(array('Invalid method'), true);
 }
