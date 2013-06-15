@@ -36,12 +36,12 @@ $ret = index_handle_post($config);
 <script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/components/pad-zeropadding-min.js"></script>
 <script src="m29.js"></script>
 </head>
-<body>
+<body onload="return prepareSubmitForm(document.getElementById('submitForm'), document.getElementById('responseResults'));">
 <div id="container">
 <h1>Secure URL Shortener</h1>
 
 <div>
-<form method="post">
+<form id="submitForm" method="post">
 <div>Enter a long URL to shorten:</div>
 <div><input type="text" name="longUrl" style="width: 100%;" /></div>
 <div style="text-align: right;"><input type="submit" name="submitButton" value="Submit" onclick="return submitEncryptedUrl(this.form, document.getElementById('responseResults'));" /></div>

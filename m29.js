@@ -30,6 +30,12 @@ var Base64URL = {
   }
 }
 
+function prepareSubmitForm(form, htmlresponse) {
+  if(!form.longUrl.className.match(/(?:^|\s)jssecure(?!\S)/)) {
+    form.longUrl.className += ' jssecure';
+  }
+}
+
 function submitEncryptedUrl(form, htmlresponse) {
   // The XMLHttpRequest method is for the benefit of the front page only.
   // Please do not use this by third-party scripts.  A fully-featured JSON
