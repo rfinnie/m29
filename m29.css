@@ -50,10 +50,19 @@ h1 {
 h2 {
   font-size: 20pt;
 }
-.center {
-  text-align: center;
-}
 
 p {
   text-align: justify;
+}
+
+#responseResults p {
+  text-align: center;
+}
+
+#submitForm input[name="longUrl"] {
+  width: 100%;
+}
+
+#submitForm #submitLine {
+  text-align: right;
 }

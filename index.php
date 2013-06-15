@@ -43,8 +43,8 @@ $ret = index_handle_post($config);
 <div>
 <form id="submitForm" method="post">
 <div>Enter a long URL to shorten:</div>
-<div><input type="text" name="longUrl" style="width: 100%;" /></div>
-<div style="text-align: right;"><input type="submit" name="submitButton" value="Submit" onclick="return submitEncryptedUrl(this.form, document.getElementById('responseResults'));" /></div>
+<div><input type="text" name="longUrl" /></div>
+<div id="submitLine"><input type="submit" name="submitButton" value="Submit" onclick="return submitEncryptedUrl(this.form, document.getElementById('responseResults'));" /></div>
 </form>
 </div>
 
@@ -52,12 +52,12 @@ $ret = index_handle_post($config);
 <?php
 if(isset($ret['short_url']) && $ret['short_url']) {
   ?>
-  <p class="center">The following short URL has been created:</p>
-  <p class="center"><a href="<?php echo $ret['short_url'] ?>" rel="nofollow"><?php echo $ret['short_url'] ?></a></p>
+  <p>The following short URL has been created:</p>
+  <p><a href="<?php echo $ret['short_url'] ?>" rel="nofollow"><?php echo $ret['short_url'] ?></a></p>
   <?php
 } elseif(isset($ret['error']) && $ret['error']) {
   ?>
-  <p class="center"><strong>Error:</strong> <?php echo $ret['error'] ?></p>
+  <p><strong>Error:</strong> <?php echo $ret['error'] ?></p>
   <?php
 }
 ?>

@@ -47,7 +47,7 @@ function submitEncryptedUrl(form, htmlresponse) {
 
   // Check for a URL-like structure
   if(!longUrl.match(/^[a-zA-Z0-9\-\+\_]+:\/\//)) {
-    htmlresponse.innerHTML = '<p class="center"><strong>Error:</strong> Input must be a full URL.</p>';
+    htmlresponse.innerHTML = '<p><strong>Error:</strong> Input must be a full URL.</p>';
     return false;
   }
 
@@ -84,12 +84,12 @@ function submitEncryptedUrl(form, htmlresponse) {
         short_url = short_url + '/' + secondKey;
       }
     }
-    htmlresponse.innerHTML = '<p class="center">The following short URL has been created:</p><p class="center"><a href="' + short_url + '" rel="nofollow">' + short_url + '</a></p>';
+    htmlresponse.innerHTML = '<p>The following short URL has been created:</p><p><a href="' + short_url + '" rel="nofollow">' + short_url + '</a></p>';
   } else if(xml.getElementsByTagName('error')[0]) {
     errorval = xml.getElementsByTagName('error')[0].firstChild.nodeValue;
-    htmlresponse.innerHTML = '<p class="center"><strong>Error:</strong> ' + errorval + '</p>';
+    htmlresponse.innerHTML = '<p><strong>Error:</strong> ' + errorval + '</p>';
   } else {
-    htmlresponse.innerHTML = '<p class="center"><strong>An unknown error has occurred.</strong></p>';
+    htmlresponse.innerHTML = '<p><strong>An unknown error has occurred.</strong></p>';
   } 
 
   // If all went well, re-enable the button.
