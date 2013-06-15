@@ -15,7 +15,7 @@ body {
   max-width: 35em;
 }
 
-input[type=text] {
+input {
   color: #222222;
   font-size: 12pt;
   background-color: #fcfcfc;
@@ -24,11 +24,6 @@ input[type=text] {
 }
 
 input[type=submit] {
-  color: #222222;
-  font-size: 12pt;
-  background-color: #fcfcfc;
-  border: 1px solid #222222;
-  font-family: 'Ubuntu Mono', monospace;
   font-weight: bold;
 }
 

@@ -31,6 +31,7 @@ var Base64URL = {
 }
 
 function prepareSubmitForm(form, htmlresponse) {
+  form.longUrl.type = 'url';
   if(!form.longUrl.className.match(/(?:^|\s)jssecure(?!\S)/)) {
     form.longUrl.className += ' jssecure';
   }
