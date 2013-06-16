@@ -21,6 +21,10 @@ if(isset($config['disable_api']) && $config['disable_api']) {
   http_400(array('The API is disabled'), true);
 }
 
+if($_SERVER['CONTENT_TYPE'] == 'application/x-www-form-urlencoded') {
+  http_400(array('This API does not support parsing form-encoded input.'), true);
+}
+
 if($_SERVER['PATH_INFO'] == '/url/history') {
   $out = array(
     'totalItems' => 0,
