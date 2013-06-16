@@ -66,3 +66,12 @@ p {
 #submitForm #submitLine {
   text-align: right;
 }
+
+.scrolllong {
+  overflow: auto;
+  white-space: nowrap;
+}
+
+.smalltext {
+  font-size: 75%;
+}

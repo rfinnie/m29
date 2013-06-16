@@ -8,6 +8,8 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 # Redirect support (example format: XQ/eGiiTURg0ZM)
 RewriteRule ^([A-Za-z0-9\_\-]+)/([A-Za-z0-9\_\-]+)$ /redirect.php/$1/$2 [L]
+# Info support
+RewriteRule ^(info/)?([A-Za-z0-9\_\-]+)/([A-Za-z0-9\_\-]+)\+?$ /info.php/$2/$3 [L]
 # goo.gl-compatible API
 RewriteRule ^urlshortener/v1/(.*?)$ /api-v1.php/$1 [L]
 </IfModule>
