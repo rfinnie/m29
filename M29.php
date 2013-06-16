@@ -384,6 +384,9 @@ class M29 {
     if(!$valid_protocol) {
       throw new M29Exception("Invalid decryption keys or URL protocol");
     }
+    if(preg_match('/[\r\n]/', $longUrl)) {
+      throw new M29Exception("Invalid URL component");
+    }
 
     $out = array(
       'long_url' => $longUrl,

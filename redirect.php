@@ -39,7 +39,7 @@ header("Location: " . $ret['long_url']);
 
 <body>
 <h1>Moved Permanently</h1>
-<p>The document has moved <a href="<?php echo $ret['long_url'] ?>">here</a>.</p>
+<p>The document has moved <a href="<?php echo htmlentities($ret['long_url']) ?>">here</a>.</p>
 <?php echo $_SERVER['SERVER_SIGNATURE'] ?>
 </body>
 </html>
