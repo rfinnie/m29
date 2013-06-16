@@ -112,9 +112,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if(isset($_GET['projection']) && (($_GET['projection'] == 'FULL') || ($_GET['projection'] == 'ANALYTICS_CLICKS'))) {
       $out['created'] = gmdate('c', $ret['created_at']);
+      if($ret['accessed_at']) {
+        $out['lastClick'] = gmdate('c', $ret['accessed_at']);
+      }
       $out['analytics'] = array(
         'allTime' => array(
-          'shortUrlClicks' => $ret['hits']
+          'shortUrlClicks' => $ret['hits'],
+          'longUrlClicks' => $ret['hits']
         )
       );
     }
