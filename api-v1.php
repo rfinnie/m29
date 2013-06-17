@@ -13,6 +13,10 @@ require_once('config.php');
 require_once('functions.php');
 require_once('M29.php');
 
+$contenttype = (isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : '');
+$pathinfo = (isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '');
+$requestmethod = (isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '');
+
 if(!function_exists('json_encode')) {
   http_error(array(
     'reason' => 'notFound',
@@ -27,14 +31,14 @@ if(isset($config['disable_api']) && $config['disable_api']) {
   ), 'json');
 }
 
-if($_SERVER['CONTENT_TYPE'] == 'application/x-www-form-urlencoded') {
+if($contenttype == 'application/x-www-form-urlencoded') {
   http_error(array(
     'reason' => 'parseError',
     'message' => 'This API does not support parsing form-encoded input.',
   ), 'json');
 }
 
-if($_SERVER['PATH_INFO'] == '/url/history') {
+if($pathinfo == '/url/history') {
   $out = array(
     'totalItems' => 0,
     'items' => array()
@@ -45,7 +49,7 @@ if($_SERVER['PATH_INFO'] == '/url/history') {
   exit();
 }
 
-if(!($_SERVER['PATH_INFO'] == '/url')) {
+if(!($pathinfo == '/url')) {
   http_error(array(
     'reason' => 'notFound',
     'message' => 'The requested URL was not found on this server.',
@@ -54,8 +58,8 @@ if(!($_SERVER['PATH_INFO'] == '/url')) {
 
 $m29 = new M29($config);
 
-if($_SERVER['REQUEST_METHOD'] == 'POST') {
-  if(!($_SERVER['CONTENT_TYPE'] == 'application/json')) {
+if($requestmethod == 'POST') {
+  if(!($contenttype == 'application/json')) {
     http_error(array(
       'reason' => 'parseError',
       'message' => 'A Content-Type of application/json is required to POST to this method',
