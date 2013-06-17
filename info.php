@@ -30,8 +30,6 @@ try {
   http_error($e->error);
 }
 
-header($_SERVER['SERVER_PROTOCOL'] . ' 301 Moved Permanently');
-#header("Location: " . $ret['long_url']);
 ?>
 <!DOCTYPE HTML>
 <html lang="en">
