@@ -14,15 +14,24 @@ require_once('functions.php');
 require_once('M29.php');
 
 if(!function_exists('json_encode')) {
-  http_400(array('json_encode is not found, please contact your server administrator'));
+  http_error(array(
+    'reason' => 'notFound',
+    'message' => 'json_encode is not found, please contact your server administrator',
+  ));
 }
 
 if(isset($config['disable_api']) && $config['disable_api']) {
-  http_400(array('The API is disabled'), true);
+  http_error(array(
+    'reason' => 'notFound',
+    'message' => 'The API is disabled',
+  ), 'json');
 }
 
 if($_SERVER['CONTENT_TYPE'] == 'application/x-www-form-urlencoded') {
-  http_400(array('This API does not support parsing form-encoded input.'), true);
+  http_error(array(
+    'reason' => 'parseError',
+    'message' => 'This API does not support parsing form-encoded input.',
+  ), 'json');
 }
 
 if($_SERVER['PATH_INFO'] == '/url/history') {
@@ -37,14 +46,20 @@ if($_SERVER['PATH_INFO'] == '/url/history') {
 }
 
 if(!($_SERVER['PATH_INFO'] == '/url')) {
-  http_400(array('Invalid method'), true);
+  http_error(array(
+    'reason' => 'notFound',
+    'message' => 'The requested URL was not found on this server.',
+  ), 'json');
 }
 
 $m29 = new M29($config);
 
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
   if(!($_SERVER['CONTENT_TYPE'] == 'application/json')) {
-    http_400(array('A Content-Type of application/json is required to POST to this method'), true);
+    http_error(array(
+      'reason' => 'parseError',
+      'message' => 'A Content-Type of application/json is required to POST to this method',
+    ), 'json');
   }
 
   $json = json_decode($HTTP_RAW_POST_DATA, true);
@@ -54,7 +69,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     try {
       $ret = $m29->insert_long_url($longUrl);
     } catch(M29Exception $e) {
-      http_400(array($e->getMessage()), true);
+      http_error($e->error, 'json');
     }
 
     $out = array(
@@ -76,7 +91,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     try {
       $ret = $m29->insert_encrypted_url($longUrlEncrypted_bin, $firstKey_bin, $secondKey_bin);
     } catch(M29Exception $e) {
-      http_400(array($e->getMessage()), true);
+      http_error($e->error, 'json');
     }
 
     if($secondKey_bin) {
@@ -97,14 +112,19 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
       print json_encode($out) . "\n";
     }
   } else {
-    http_400('This method requires either longUrl or longUrlEncrypted/firstKey', true);
+    http_error(array(
+      'reason' => 'required',
+      'message' => 'Required parameter: longUrl',
+      'locationType' => 'parameter',
+      'location' => 'longUrl',
+    ), 'json');
   }
 } else {
   if(isset($_GET['shortUrl'])) {
     try {
       $ret = $m29->process_short_url($_GET['shortUrl'], false);
     } catch(M29Exception $e) {
-      http_400(array($e->getMessage()), true);
+      http_error($e->error, 'json');
     }
 
     $out = array(
@@ -130,6 +150,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     header("Content-Type: application/json; charset=UTF-8");
     print json_encode($out) . "\n";
   } else {
-    http_400(array('This method requires shortUrl'), true);
+    http_error(array(
+      'reason' => 'required',
+      'message' => 'Required parameter: shortUrl',
+      'locationType' => 'parameter',
+      'location' => 'shortUrl',
+    ), 'json');
   }
 }

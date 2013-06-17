@@ -18,13 +18,16 @@ $m29 = new M29($config);
 if(isset($_SERVER['PATH_INFO'])) {
   $url = $m29->base_url . $_SERVER['PATH_INFO'];
 } else {
-  http_400(array('Cannot determine the short URL'));
+  http_error(array(
+    'reason' => 'serviceError',
+    'message' => 'Cannot determine the short URL',
+  ));
 }
 
 try {
   $ret = $m29->process_short_url($url, false);
 } catch(M29Exception $e) {
-  http_400(array($e->getMessage()));
+  http_error($e->error);
 }
 
 header($_SERVER['SERVER_PROTOCOL'] . ' 301 Moved Permanently');

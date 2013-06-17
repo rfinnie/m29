@@ -41,13 +41,13 @@ function index_handle_post($config = array()) {
     try {
       $ret = $m29->insert_encrypted_url($longUrlEncrypted_bin, $firstKey_bin, $secondKey_bin);
     } catch(M29Exception $e) {
-      $ret['error'] = $e->getMessage();
+      $ret['error'] = $e->error;
     }
   } elseif(isset($post['longUrl']) && $post['longUrl']) {
     try {
       $ret = $m29->insert_long_url($post['longUrl']);
     } catch(M29Exception $e) {
-      $ret['error'] = $e->getMessage();
+      $ret['error'] = $e->error;
     }
   }
 
@@ -77,49 +77,50 @@ function index_handle_post($config = array()) {
 }
 
 /**
- * Outputs an HTTP 400 (Bad Request) error
+ * Outputs an HTTP error
  *
- * @param array $errors Error strings to output
- * @param bool $json Whether to output the error as a goo.gl-compatible
- *                   JSON object
+ * @param array $error Error array
+ * @param bool $type 'html' (default) or 'json'
  * @return void
  */
-function http_400($errors, $json = false) {
-  $outerrors = array();
-  $lasterror = '';
-  foreach($errors as $error) {
-    $outerrors[] = array(
-      'reason' => 'invalid',
-      'message' => $error
-    );
-    $lasterror = $error;
+function http_error($error, $type = 'html') {
+  $error['domain'] = 'global';
+  if(in_array($error['reason'], array('required', 'invalid', 'parseError'))) {
+    $code = 400;
+    $codedesc = 'Bad Request';
+  } elseif($error['reason'] == 'notFound') {
+    $code = 404;
+    $codedesc = 'Not Found';
+  } else {
+    $code = 503;
+    $codedesc = 'Service Unavailable';
   }
 
-  header($_SERVER['SERVER_PROTOCOL'] . ' 400 Bad Request');
-  if($json && function_exists('json_encode')) {
+  header($_SERVER['SERVER_PROTOCOL'] . " $code $codedesc");
+
+  if(($type == 'json') && function_exists('json_encode')) {
+    header('Content-Type: application/json; charset=UTF-8');
     $out = array(
       'error' => array(
-        'errors' => $outerrors,
-        'code' => 400,
-        'message' => $lasterror
+        'errors' => array($error),
+        'code' => $code,
+        'message' => $error['message']
       )
     );
-
-    header("Content-Type: application/json; charset=UTF-8");
     print json_encode($out) . "\n";
   } else {
+    header('Content-Type: text/html; charset=UTF-8');
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="Content-type" content="text/html;charset=UTF-8"/>
-  <title>400 Bad Request</title>
+  <title><?php echo $code; ?> <?php echo $codedesc; ?></title>
 </head>
 
 <body>
-<h1>Bad Request</h1>
-<p>The following errors have been produced:</p>
-<pre><?php print_r($outerrors) ?></pre>
+<h1><?php echo $codedesc; ?></h1>
+<p><?php echo htmlentities($error['message']); ?></p>
+<pre><?php print_r($error) ?></pre>
 <?php echo $_SERVER['SERVER_SIGNATURE'] ?>
 </body>
 </html>

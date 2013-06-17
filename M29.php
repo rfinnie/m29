@@ -259,7 +259,12 @@ class M29 {
       }
     }
     if(!$valid_protocol) {
-      throw new M29Exception("Invalid URL protocol");
+      throw new M29Exception(array(
+        'reason' => 'invalid',
+        'message' => 'Invalid URL protocol',
+        'locationType' => 'parameter',
+        'location' => 'longUrl'
+      ));
     }
 
     $longUrlEncrypted_bin = $this->encrypt($url, $key);
@@ -276,14 +281,29 @@ class M29 {
    */
   public function insert_encrypted_url($longUrlEncrypted_bin, $firstKey_bin, $secondKey_bin = '') {
     if(!(strlen($firstKey_bin) == 8)) {
-      throw new M29Exception("firstKey must be 64 bits (8 bytes)");
+      throw new M29Exception(array(
+        'reason' => 'invalid',
+        'message' => 'firstKey must be 64 bits (8 bytes)',
+        'locationType' => 'parameter',
+        'location' => 'firstKey'
+      ));
     }
     if(strlen($longUrlEncrypted_bin) > $this->max_url_length) {
-      throw new M29Exception("URLs must be " . $this->max_url_length . " characters or less");
+      throw new M29Exception(array(
+        'reason' => 'invalid',
+        'message' => 'URLs must be ' . $this->max_url_length . ' characters or less',
+        'locationType' => 'parameter',
+        'location' => 'longUrl'
+      ));
     }
     if($secondKey_bin) {
       if(!(strlen($secondKey_bin) == 8)) {
-        throw new M29Exception("secondKey must be 64 bits (8 bytes)");
+        throw new M29Exception(array(
+          'reason' => 'invalid',
+          'message' => 'secondKey must be 64 bits (8 bytes)',
+          'locationType' => 'parameter',
+          'location' => 'secondKey'
+        ));
       }
       $key = $firstKey_bin . $secondKey_bin;
       $url = $this->decrypt($longUrlEncrypted_bin, $key);
@@ -297,7 +317,12 @@ class M29 {
         }
       }
       if(!$valid_protocol) {
-        throw new M29Exception("Invalid decryption keys or URL protocol");
+        throw new M29Exception(array(
+          'reason' => 'invalid',
+          'message' => 'Invalid decryption keys or URL protocol',
+          'locationType' => 'parameter',
+          'location' => 'longUrl'
+        ));
       }
     }
 
@@ -310,7 +335,10 @@ class M29 {
       $sth->bindValue(3, $firstKey_bin, PDO::PARAM_STR);
       $sth->execute();
     } catch(PDOException $e) {
-      throw new M29Exception("Database error: " . $e->getMessage());
+      throw new M29Exception(array(
+        'reason' => 'serviceError',
+        'message' => 'Database error: ' . $e->getMessage()
+      ));
     }
 
     $id = $this->dbh->lastInsertId();
@@ -345,16 +373,31 @@ class M29 {
    */
   public function process_short_url($shortUrl, $increment_hits = false) {
     if(!substr($shortUrl, 0, strlen($this->base_url)) == $this->base_url) {
-      throw new M29Exception("Cannot determine URL components");
+      throw new M29Exception(array(
+        'reason' => 'invalid',
+        'message' => 'Cannot determine URL components',
+        'locationType' => 'parameter',
+        'location' => 'shortUrl'
+      ));
     }
     if(!preg_match('/^\/([A-Za-z0-9\_\-]+)\/([A-Za-z0-9\_\-]+)$/', substr($shortUrl, strlen($this->base_url)), $m)) {
-      throw new M29Exception("Cannot determine URL components");
+      throw new M29Exception(array(
+        'reason' => 'invalid',
+        'message' => 'Cannot determine URL components',
+        'locationType' => 'parameter',
+        'location' => 'shortUrl'
+      ));
     }
     $id_bin = $this->base64_decode_url($m[1]);
     $secondKey_bin = $this->base64_decode_url($m[2]);
 
     if(!(strlen($secondKey_bin) == 8)) {
-      throw new M29Exception("secondKey must be 64 bits (8 bytes)");
+      throw new M29Exception(array(
+        'reason' => 'invalid',
+        'message' => 'Cannot determine URL components',
+        'locationType' => 'parameter',
+        'location' => 'shortUrl'
+      ));
     }
 
     try {
@@ -363,7 +406,10 @@ class M29 {
       $sth->bindValue(1, $this->chars2int($id_bin), PDO::PARAM_INT);
       $sth->execute();
     } catch(PDOException $e) {
-      throw new M29Exception("Database error: " . $e->getMessage());
+      throw new M29Exception(array(
+        'reason' => 'serviceError',
+        'message' => 'Database error: ' . $e->getMessage()
+      ));
     }
 
     $row = array();
@@ -382,10 +428,20 @@ class M29 {
       }
     }
     if(!$valid_protocol) {
-      throw new M29Exception("Invalid decryption keys or URL protocol");
+      throw new M29Exception(array(
+        'reason' => 'invalid',
+        'message' => 'Invalid decryption keys or URL protocol',
+        'locationType' => 'parameter',
+        'location' => 'longUrl'
+      ));
     }
     if(preg_match('/[\r\n]/', $longUrl)) {
-      throw new M29Exception("Invalid URL component");
+      throw new M29Exception(array(
+        'reason' => 'invalid',
+        'message' => 'Invalid URL component',
+        'locationType' => 'parameter',
+        'location' => 'longUrl'
+      ));
     }
 
     $out = array(
@@ -403,7 +459,10 @@ class M29 {
         $sth->bindValue(2, $this->chars2int($id_bin), PDO::PARAM_INT);
         $sth->execute();
       } catch(PDOException $e) {
-        throw new M29Exception("Database error: " . $e->getMessage());
+        throw new M29Exception(array(
+          'reason' => 'serviceError',
+          'message' => 'Database error: ' . $e->getMessage()
+        ));
       }
     }
 
@@ -412,4 +471,11 @@ class M29 {
 
 }
 
-class M29Exception extends Exception { }
+class M29Exception extends Exception {
+  public $error = array();
+
+  public function __construct($error) {
+    $this->error = $error;
+    parent::__construct($error['message'], 0, null);
+  }
+}
