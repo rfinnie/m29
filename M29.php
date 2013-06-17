@@ -374,16 +374,16 @@ class M29 {
   public function process_short_url($shortUrl, $increment_hits = false) {
     if(!substr($shortUrl, 0, strlen($this->base_url)) == $this->base_url) {
       throw new M29Exception(array(
-        'reason' => 'invalid',
-        'message' => 'Cannot determine URL components',
+        'reason' => 'notFound',
+        'message' => 'Not Found',
         'locationType' => 'parameter',
         'location' => 'shortUrl'
       ));
     }
     if(!preg_match('/^\/([A-Za-z0-9\_\-]+)\/([A-Za-z0-9\_\-]+)$/', substr($shortUrl, strlen($this->base_url)), $m)) {
       throw new M29Exception(array(
-        'reason' => 'invalid',
-        'message' => 'Cannot determine URL components',
+        'reason' => 'notFound',
+        'message' => 'Not Found',
         'locationType' => 'parameter',
         'location' => 'shortUrl'
       ));
@@ -393,8 +393,8 @@ class M29 {
 
     if(!(strlen($secondKey_bin) == 8)) {
       throw new M29Exception(array(
-        'reason' => 'invalid',
-        'message' => 'Cannot determine URL components',
+        'reason' => 'notFound',
+        'message' => 'Not Found',
         'locationType' => 'parameter',
         'location' => 'shortUrl'
       ));
@@ -413,7 +413,19 @@ class M29 {
     }
 
     $row = array();
-    while($rowi = $sth->fetch()) { $row = $rowi; }
+    $rowsfound = 0;
+    while($rowi = $sth->fetch()) {
+      $row = $rowi;
+      $rowsfound++;
+    }
+    if($rowsfound == 0) {
+      throw new M29Exception(array(
+        'reason' => 'notFound',
+        'message' => 'Not Found',
+        'locationType' => 'parameter',
+        'location' => 'shortUrl'
+      ));
+    }
     $firstKey_bin = $row['first_key'];
     $longUrlEncrypted_bin_check = $row['encrypted_url'];
     $key = $firstKey_bin . $secondKey_bin;
