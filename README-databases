@@ -24,8 +24,8 @@ entries.  (If you're hitting that limit, SQLite is probably not the
 best solution anyway.)
 
 == MySQL ==
-Requires the "pdo_mysql" and a (php5-mysql package) and a functional 
-MySQL server/client.
+Requires the "pdo_mysql" PHP module (php5-mysql package) and a
+functional MySQL server/client.
 
 CREATE TABLE urls (
   id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -38,7 +38,7 @@ CREATE TABLE urls (
 );
 
 == PostgreSQL ==
-Requires the "pdo_pgsql" and a (php5-pgsql package) and a functional 
-PostgreSQL server/client.
+Requires the "pdo_pgsql" PHP module (php5-pgsql package) and a
+functional PostgreSQL server/client.
 
 TODO
